@@ -1,0 +1,8 @@
+#!/bin/bash
+
+gitdir=$(basename !$ .git)
+
+if [ -d $gitdir ]
+then
+    cd $gitdir
+fi

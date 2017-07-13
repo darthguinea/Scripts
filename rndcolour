@@ -1,0 +1,16 @@
+#!/usr/local/bin/python
+
+import sys
+import random
+
+
+def main(argv):
+    rst = '\033[0m'
+    rnd = '\033[38;5;{rnd}m'.format(rnd=random.randint(40, 230))
+    msg=' '.join(argv)
+
+    print rnd + '{msg}'.format(msg=msg) + rst
+
+
+if __name__ == '__main__':
+    main(sys.argv[1:])
