@@ -1,0 +1,58 @@
+#!/bin/bash
+
+stopContainers() {
+    IMAGE=$1
+    for i in `docker ps | awk -v image=$IMAGE '{ if ($2 == image) print $0; }' | awk '{print $1}'`
+    do
+        docker stop ${i}
+    done
+}
+
+removeContainers() {
+    IMAGE=$1
+    for i in `docker ps -a | awk -v image=$IMAGE '{ if ($2 == image) print $0; }' | awk '{print $1}'`
+    do
+        docker rm $i
+    done
+}
+
+removeImage() {
+    IMAGE=$1
+
+    for i in `docker images | awk -v image=$IMAGE '{if ($1 == image) print $0; }' | awk '{print $3}'`
+    do
+        docker rmi ${i}
+    done
+}
+
+getImage() {
+    IMAGE_ID=$1
+    IMAGE=$(docker ps -a | awk -v image_id=$IMAGE_ID '{ if ($1 == image_id || $2 == image_id) print $0; }' | awk '{print $2}')
+    echo $IMAGE
+}
+
+main() {
+    IMAGE=$(getImage $1)
+
+    while getopts ":n" o
+    do
+        case $arg in
+            n)
+                echo "usage"
+                ;;
+            ?)
+                echo "usage"
+                ;;
+        esac
+    done
+
+    if [ "${IMAGE}" != "" ]
+    then
+        stopContainers ${IMAGE}
+        removeContainers ${IMAGE}
+        removeImage ${IMAGE}
+    fi
+}
+
+IMAGE_ID=$1
+main $@
